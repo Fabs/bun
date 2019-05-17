@@ -26,7 +26,7 @@ func init() {
 
 func collect(host bun.Host) (ok bool, details interface{}, err error) {
 	errorMatcher, _ := regexp.Compile(errorsRegex)
-	keys := make(map[int]int)
+  keys := make(map[int]int)
 
 	file, err1 := host.OpenFile("net")
 	defer file.Close()
@@ -46,8 +46,8 @@ func collect(host bun.Host) (ok bool, details interface{}, err error) {
 			s := regexp.MustCompile(" ").Split(line, 3)
 		  date := regexp.MustCompile(":").Split(s[1], 3)
 			hours, _ := strconv.ParseFloat(date[0], 10)
-			minutes, _ := strconv.ParseFloat(date[1], 10)
-			minuteKey := int(hours*60 + (minutes/10))
+			//minutes, _ := strconv.ParseFloat(date[1], 10)
+			minuteKey := int(hours*60)
 			if _, ok := keys[minuteKey]; ok == false {
 				keys[minuteKey] = 0
 			}
@@ -69,7 +69,11 @@ func collect(host bun.Host) (ok bool, details interface{}, err error) {
 	sort.Ints(sKeys)
 
 	for _, k := range sKeys {
-		fmt.Printf("%2d: %d\n", k, keys[k])
+		fmt.Printf("%2d ", k)
+		for i := 1; i <= keys[k]; i += 10 {
+			fmt.Print("#")
+		}
+		fmt.Printf("\n")
 	}
 	fmt.Println("")
 
